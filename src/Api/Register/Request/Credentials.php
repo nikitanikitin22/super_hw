@@ -2,9 +2,9 @@
 
 declare(strict_types=1);
 
-namespace Super\Api\Register;
+namespace Super\Api\Register\Request;
 
-class RegisterRequest
+class Credentials
 {
     private string $clientId;
     private string $email;
