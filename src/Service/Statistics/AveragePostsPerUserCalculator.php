@@ -2,14 +2,18 @@
 
 declare(strict_types=1);
 
-namespace Super\Service;
+namespace Super\Service\Statistics;
 
 use Super\Entity\AggregatedPosts;
 use Super\Entity\AggregatedPostsCollection;
+use Super\Entity\Statistics;
+use Super\Entity\StatisticsCollection;
 
-class AveragePostsPerUserCalculator
+class AveragePostsPerUserCalculator implements StatisticsInterface
 {
-    public function calculate(AggregatedPostsCollection $postsCollection)
+    private const NAME = 'Average number of posts per user per timeunit (months for homework)';
+
+    public function calculateStatistics(AggregatedPostsCollection $postsCollection): StatisticsCollection
     {
         $totalMap = [];
 
@@ -25,11 +29,14 @@ class AveragePostsPerUserCalculator
             }
         }
 
+        $statisticsCollection = new StatisticsCollection(self::getName());
         $timeUnitCount = count($postsCollection->getAggregatedPosts());
 
         foreach ($totalMap as $key => $value) {
-            echo 'Average post count for user ' . $key . ' is ' . $value/$timeUnitCount . PHP_EOL;
+            $statisticsCollection->addStatistics(new Statistics($key, $value / $timeUnitCount));
         }
+
+        return $statisticsCollection;
     }
 
     private function calculateAverageForAggregation(AggregatedPosts $aggregatedPosts)
@@ -46,5 +53,10 @@ class AveragePostsPerUserCalculator
         }
 
         return $userPostsMap;
+    }
+
+    public function getName(): string
+    {
+        return self::NAME;
     }
 }

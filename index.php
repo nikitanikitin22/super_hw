@@ -19,7 +19,6 @@ $tokenMapper = new \Super\Mapper\TokenMapper();
 $registerRequest = new \Super\Api\Register\RegisterRequestCommand($credentialsProvider, $apiClient, $tokenMapper);
 
 
-
 $postRequestsCommand = new \Super\Api\Posts\PostsRequestCommand(
     new \Super\Mapper\PostCollectionMapper(new \Super\Mapper\PostMapper()),
     $apiClient
@@ -33,13 +32,25 @@ try {
     $aggregator = new \Super\Service\Aggregator();
 
     $postsPerMonth = $aggregator->aggregateByMonths($posts);
-    (new \Super\Service\AverageCharactersCalculator())->calculate($postsPerMonth);
-    (new \Super\Service\LongestPostFinder())->find($postsPerMonth);
-    (new \Super\Service\AveragePostsPerUserCalculator())->calculate($postsPerMonth);
+    $averageCharsPerMonth = (new \Super\Service\Statistics\AverageCharactersCalculator())->calculateStatistics($postsPerMonth);
+    $longestPostPerMonth = (new \Super\Service\Statistics\LongestPostFinder())->calculateStatistics($postsPerMonth);
+    $averagePostPerUserPerMonth = (new \Super\Service\Statistics\AveragePostsPerUserCalculator())->calculateStatistics($postsPerMonth);
 
     $postsPerWeek = $aggregator->aggregateByWeeks($posts);
 
-    (new \Super\Service\TotalPostsCounter())->count($postsPerWeek);
+    $totalPostsPerWeek = (new \Super\Service\Statistics\TotalPostsCounter())->calculateStatistics($postsPerWeek);
+
+    $formatter = new \Super\Formatter\StatisticsCollectionOutputFormatter();
+
+    $output = [
+        $formatter->format($averageCharsPerMonth),
+        $formatter->format($longestPostPerMonth),
+        $formatter->format($averagePostPerUserPerMonth),
+        $formatter->format($totalPostsPerWeek),
+    ];
+
+    //Probably needs to be replaced with a class as well
+    echo json_encode($output, JSON_PRETTY_PRINT);
 
 } catch (\Super\Api\ApiException $exception) {
     echo $exception->getMessage();
