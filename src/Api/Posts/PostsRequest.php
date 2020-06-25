@@ -2,9 +2,9 @@
 
 declare(strict_types=1);
 
-namespace Super\Api\Posts\Request;
+namespace Super\Api\Posts;
 
-use Super\Api\Register\Response\Token;
+use Super\Entity\Token;
 
 class PostsRequest
 {

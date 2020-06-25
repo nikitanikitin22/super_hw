@@ -7,8 +7,8 @@ namespace Super\Api;
 use GuzzleHttp\Client as Guzzle;
 use GuzzleHttp\Exception\GuzzleException;
 use Psr\Http\Message\ResponseInterface;
-use Super\Api\Posts\Request\PostsRequest;
-use Super\Api\Register\Request\Credentials;
+use Super\Api\Posts\PostsRequest;
+use Super\Entity\Credentials;
 
 class Client
 {

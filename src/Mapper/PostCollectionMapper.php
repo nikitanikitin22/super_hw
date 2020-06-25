@@ -18,8 +18,8 @@ class PostCollectionMapper
     public function map(array $posts, PostCollection $collection): PostCollection
     {
         foreach ($posts as $post) {
-            $this->postMapper->map($post);
-            $collection->addPost($post);
+            $mappedPost = $this->postMapper->map($post);
+            $collection->addPost($mappedPost);
         }
 
         return $collection;

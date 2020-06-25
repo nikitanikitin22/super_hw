@@ -2,11 +2,11 @@
 
 declare(strict_types=1);
 
-namespace Super\Api\Register\Mapper;
+namespace Super\Mapper;
 
 use Psr\Http\Message\ResponseInterface;
 use Super\Api\ApiException;
-use Super\Api\Register\Response\Token;
+use Super\Entity\Token;
 
 class TokenMapper
 {

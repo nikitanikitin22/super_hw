@@ -2,19 +2,19 @@
 
 declare(strict_types=1);
 
-namespace Super\Api\Register\Request;
+namespace Super\Entity;
 
-class Credentials
+class Token
 {
     private string $clientId;
     private string $email;
-    private string $name;
+    private string $slToken;
 
-    public function __construct(string $clientId, string $email, string $name)
+    public function __construct(string $clientId, string $email, string $slToken)
     {
         $this->clientId = $clientId;
         $this->email = $email;
-        $this->name = $name;
+        $this->slToken = $slToken;
     }
 
     public function getClientId(): string
@@ -27,8 +27,8 @@ class Credentials
         return $this->email;
     }
 
-    public function getName(): string
+    public function getSlToken(): string
     {
-        return $this->name;
+        return $this->slToken;
     }
 }
