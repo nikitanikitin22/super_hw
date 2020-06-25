@@ -30,12 +30,16 @@ try {
     $token = $registerRequest->getToken();
     $posts = $postRequestsCommand->fetchMultiplePostPages(1, 10, $token);
 
-    $monthlyAggregator = new \Super\Aggregator\MonthlyAggregator();
+    $aggregator = new \Super\Service\Aggregator();
 
-    $postsPerMonth = $monthlyAggregator->makeFromCollection($posts);
+    $postsPerMonth = $aggregator->aggregateByMonths($posts);
     (new \Super\Service\AverageCharactersCalculator())->calculate($postsPerMonth);
     (new \Super\Service\LongestPostFinder())->find($postsPerMonth);
     (new \Super\Service\AveragePostsPerUserCalculator())->calculate($postsPerMonth);
+
+    $postsPerWeek = $aggregator->aggregateByWeeks($posts);
+
+    (new \Super\Service\TotalPostsCounter())->count($postsPerWeek);
 
 } catch (\Super\Api\ApiException $exception) {
     echo $exception->getMessage();
