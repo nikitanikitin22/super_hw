@@ -24,7 +24,6 @@ $postRequestsCommand = new \Super\Api\Posts\PostsRequestCommand(
     $apiClient
 );
 
-
 try {
     $token = $registerRequest->getToken();
     $posts = $postRequestsCommand->fetchMultiplePostPages(1, 10, $token);
