@@ -7,10 +7,8 @@ namespace Super\Api;
 use GuzzleHttp\Client as Guzzle;
 use GuzzleHttp\Exception\GuzzleException;
 use Psr\Http\Message\ResponseInterface;
-use Super\Api\Posts\PostsRequest;
-use Super\Api\Posts\PostsResponse;
+use Super\Api\Posts\Request\PostsRequest;
 use Super\Api\Register\Request\Credentials;
-use Super\Api\Register\RegisterResponse;
 
 class Client
 {
@@ -54,8 +52,29 @@ class Client
         return $response;
     }
 
-    public function getPosts(PostsRequest $request): PostsResponse
+    public function getPosts(PostsRequest $request): ResponseInterface
     {
+        try {
+            $response = $this->httpClient->request('GET', self::POSTS, [
+                'query' => [
+                    'sl_token' => $request->getToken()->getSlToken(),
+                    'page'     => $request->getPage(),
+                ]
+            ]);
+        } catch (GuzzleException $exception) {
+            throw new ApiException($exception->getMessage());
+        }
 
+        //I expect all bad responses to have proper error codes,
+        // still putting this here in case of error without 4XX/5XX status code.
+        if ($response->getStatusCode() !== 200) {
+            $body = json_decode($response->getBody()->getContents(), true);
+
+            $error = isset($body['error']['message']) ? $body['error']['message'] : self::DEFAULT_ERROR;
+
+            throw new ApiException($error);
+        }
+
+        return $response;
     }
 }
